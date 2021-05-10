@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>admain</title>
+  <link href="css/bootstrap.css" rel="stylesheet" />
+  <link href="css/font-awesome.css" rel="stylesheet" />
+  <link href="emp.css" rel="stylesheet" />
+  <script src="jquery-3.5.1.js"></script>
+
+  <script>
+    let arr = [];
+    let emp = [];
+    let _url2 = "emp.json";
+    let _url = "data.json";
+    $.ajax({
+      url: _url,
+      type: "get",
+      success: function (data) {
+
+        arr = data;
+
+      },
+      error: function err() {
+        console.log("Error Mesage!!");
+      }
+
+    });
+    $.ajax({
+      url: _url2,
+      type: "get",
+      success: function (data) {
+        emp = data;
+      },
+      error: function err() {
+        console.log("Error Mesage!!");
+      }
+    });
+
+    $(function () {
+      txtobj = $("#newsTxt");
+      btnobj = $("#btn");
+      date = new Date().toLocaleDateString('en-US');
+      employees = arr.filter(e => e.flag == true);
+      $('#all').on("click", function () {
+        $('tr').remove();
+        $("#newsTbl").append("<tr><th scope='col'>username</th><th scope='col'>age</th><th scope='col'>address</th><th colspan='3' scope='col'>#</th></tr>");
+        for (i = 0; i < arr.length; i++) {
+          if (arr[i].flag == false) {
+            $("#newsTbl").append("<tr id=" + arr[i].id + " ><td text-align='center'> " + arr[i].username +
+              "</td><td text-align='center'> " + arr[i].age +
+              "</td><td text-align='center'> " + arr[i].address +
+              "</td><td><a class='dele'  id=" + arr[i].id + " href='#'>Delete</a></td><td><a class='add' id=" + arr[i].id
+              + " href='#'>Approve</a></td></tr>");
+            //document.getElementById("get").disabled = true;
+          } else {
+            $("#newsTbl").append("<tr id=" + arr[i].id + " ><td text-align='center'> " + arr[i].username +
+              "</td><td text-align='center'> " + arr[i].age +
+              "</td><td text-align='center'> " + arr[i].address +
+              "</td><td></td><td></td></tr>");
+          }
+        }
+        $("#newsTbl").on("click", ".add", function (e) {
+          var Id = e.target['id'];
+          console.log(Id);
+          var find = arr.find(e => e.id == Id);
+          find.flag = true;
+          var number = "#" + Math.random().toString(36).substring(2, 4) + Math.random().toString(36).substring(2, 4);
+          find.code = number;
+          saveData(arr);
+        })
+
+      });
+      $("#newsTbl").on("click", ".dele", function (e) {
+        var Id = e.target['id'];
+        console.log(Id);
+        var d = arr.filter(e => e.id != Id)
+        saveData(d);
+      });
+      $("#full").on('click', function () {
+        $('tr').remove();
+        $("#newsTbl").append("<tr><th>User Name</th><th>Attand</th><th>Late</th><th>Abacen</th></tr>");
+        for (i = 0; i < employees.length; i++) {
+          let Late = 0;
+          let Attandd = 0;
+          let Find = emp.filter(el => el.username == employees[i].username);
+          console.log(Find);
+          for (j = 0; j < Find.length; j++) {
+            if (Find[j].late == true) {
+              Late++;
+              Attandd++;
+            } else {
+              Attandd++;
+            }
+          }
+          let absent = (date.split('/')[1]) - Attandd;
+          $("#newsTbl").append("<tr><td>" + employees[i].username + "</td><td>" + Attandd + "</td><td>" + Late +
+            "</td><td>" + absent + "</td></tr>");
+        }
+
+      });
+      //
+      $("#late").on('click', function () {
+        $('tr').remove();
+        $("#newsTbl").append("<tr><th>User Name</th><th colspan='5' >Late</th></tr>");
+        for (i = 0; i < employees.length; i++) {
+          Late = 0;
+          let Find = emp.filter(el => el.username == employees[i].username);
+          for (j = 0; j < Find.length; j++) {
+            if (Find[j].late == true)
+              Late++;
+          }
+          $("#newsTbl").append("<tr><td>" + employees[i].username + "</td><td colspan='5'>" + Late +
+            "</td></tr>");
+        }
+      });
+
+      $("#absence").on('click', function () {
+        $('tr').remove();
+        $("#newsTbl").append("<tr><th>User Name</th><th colspan='5' >Absence</th></tr>");
+        for (i = 0; i < employees.length; i++) {
+          let Attandd = 0;
+          let Find = emp.filter(el => el.username == employees[i].username);
+          for (j = 0; j < Find.length; j++) {
+            if (Find[j].attand == true)
+              Attandd++;
+          }
+          let absent = (date.split('/')[1]) - Attandd;
+          $("#newsTbl").append("<tr><td>" + employees[i].username + "</td><td colspan='5'>" + absent +
+            "</td></tr>");
+        }
+      });
+      $("#logout").on('click', function () {
+        window.open("login.html", "_self");
+      });
+
+
+    });
+    function saveData(arr) {
+      var NewData = new Blob([JSON.stringify(arr)], { type: "appliction/json" });
+      var link = document.createElement("a");
+      link.href = window.webkitURL.createObjectURL(NewData);
+      link.setAttribute("download", "data.json");
+      document.body.appendChild(link);
+      link.click();
+    }
+
+
+
+
+
+
+  </script>
+</head>
+
+<body>
+
+  <ul class="nav row">
+    <li class="nav-item">
+      <button class="nav-link text-nowrap" id="all">All Employees</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link text-nowrap" id="full">Full Report</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link text-nowrap" id="late">Late Report</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link text-nowrap" id="absence">Absence Report</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link text-nowrap" id="logout">Logout</button>
+    </li>
+  </ul>
+
+  <table id="newsTbl" text-align="center" class="table table-striped">
+
+  </table>
+  <script src="js/popper.js"></script>
+  <script src="js/bootstrap.js"></script>
+</body>
+
+</html>

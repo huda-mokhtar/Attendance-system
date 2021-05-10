@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>supemp</title>
+  <link href="css/bootstrap.css" rel="stylesheet" />
+  <link href="css/font-awesome.css" rel="stylesheet" />
+  <link href="emp.css" rel="stylesheet" />
+  <script src="jquery-3.5.1.js"></script>
+  <script>
+    let arr = [];
+    let emp = [];
+    let _url = "data.json";
+    let _url2 = "emp.json";
+
+    $.ajax({
+      url: _url,
+      type: "get",
+      success: function (data) {
+
+        arr = data;
+
+      },
+      error: function err() {
+        console.log("Error Mesage!!");
+      }
+
+    });
+    $.ajax({
+      url: _url2,
+      type: "get",
+      success: function (data) {
+
+        emp = data;
+
+      },
+      error: function err() {
+        console.log("Error Mesage!!");
+      }
+
+    });
+    $(function () {
+      usertxtinput = document.getElementById('usertxtinput');
+      $("#div").hide();
+      $('#div1').hide();
+      $('#div2').hide();
+      $('#confirme').on('click', function () {
+        $("#div").hide();
+        $('#div1').show();
+
+      });
+      // made data
+      date = new Date().toLocaleDateString('en-US');
+      time = new Date().toLocaleTimeString('en-US');
+      Attend = true;
+      if (time >= "9:30:00 AM") {
+        Late = false;
+      } else {
+        Late = true;
+      }
+      ptime = document.createElement("p");
+      ptime.innerHTML = "" + time + "";
+      document.getElementById("p2").appendChild(ptime);
+
+      //listen text
+      $("#usertxtinput").keypress(function () {
+        $('#div2').hide();
+        $('p').remove();
+      });
+
+      $("#logout").on('click', function () {
+        window.open("login.html", "_self");
+      });
+    });
+    //confrim fun
+    function search() {
+      debugger;
+      const Find = arr.find(el => el.code == usertxtinput.value);
+      const Find2 = emp.filter(el => el.code == usertxtinput.value);
+      const found = Find2.find(el => el.data == date);
+      if (found) {
+        alert("Emp have entered before");
+      } else {
+        if (Find) {
+          if (time.split(':')[0] >= 8 && time.split(':')[0] <= 10 && time.split(':')[2].split(' ')[1] == "AM") {
+            $('#div2').show();
+            $("#p1").append("<p>" + Find.username + "</p>");
+            // document.getElementById("search").disabled = true;
+            //push data
+            var empobject = {
+              username: Find.username,
+              code: Find.code,
+              time: time,
+              data: date,
+              attand: Attend,
+              late: Late
+            }
+            emp.push(empobject);
+            console.log(emp);
+            //downlod file
+            saveData(emp);
+          } else {
+            alert("you are late and Can't confirm now ");
+          }
+        } else {
+          alert("Not in data of employee");
+        }
+
+      }
+    }
+    //close 
+    function closeindex() {
+      $('#div2').hide();
+      // document.getElementById("search").disabled = false;
+      $("p").remove();
+    }
+    //fun dailay
+    function daily() {
+      $('#div1').hide();
+      $('#div2').hide();
+      var Late = 0;
+      var Atendd = 0;
+      const Find = emp.filter(el => el.username == arr[1].username);
+      const attendday = Find.find(el => el.data == new Date().toLocaleDateString('en-US'));
+      $("p").remove();
+      if (attendday) {
+        $("#div").show();
+        if (attendday.late) {
+          $("#div").append("<p>YOU ATTAND AT" + attendday.time + "</p>");
+          $("#div").append("<p>YOU ARE LATE</p>");
+        } else {
+          $("#div").append("<p>YOU ATTAND AT" + attendday.time + "</p>");
+          $("#div").append("<p>YOU ARENOT LATE</p>");
+        }
+      } else {
+        $("#div").show();
+        $("#div").append("<p>You not Attend Today</p>");
+      }
+    }
+    // month report
+    function month() {
+      $('#div1').hide();
+      $('#div2').hide();
+      let Late = 0;
+      let Atendd = 0;
+      const Find = emp.filter(el => el.username == arr[1].username);
+      $("p").remove();
+      if (emp.find(el => el.username == arr[1].username)) {
+        for (i = 0; i < Find.length; i++) {
+          if (Find[i].late == true) {
+            Late++;
+            Atendd++;
+          } else {
+            Atendd++;
+          }
+        }
+        $("#div").show();
+        $("#div").append("<p>You Are Late  " + Late + " Days In Month</p>");
+        $("#div").append("<p>You Are Attend" + Atendd + " In Month </p>");
+      } else {
+        $("#div").show();
+        $("#div").append("<p>YOI ARENOT ATTAND THIS MONTH</p>");
+      }
+    }
+
+
+
+    //fun to save
+    function saveData(arr) {
+      var NewData = new Blob([JSON.stringify(arr)], { type: "appliction/json" });
+      var link = document.createElement("a");
+      link.href = window.webkitURL.createObjectURL(NewData);
+      link.setAttribute("download", "emp.json");
+      document.body.appendChild(link);
+      link.click();
+    }
+
+
+
+
+  </script>
+</head>
+
+<body>
+
+  <ul class="nav row col-12">
+    <li class="nav-item">
+      <button class="nav-link text-nowrap" disabled>Heba </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link text-nowrap" onclick="month();">Monthly Report</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link text-nowrap" onclick="daily();">Daily Report</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link text-nowrap" id="confirme">Confirme</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link text-nowrap col-12" id="logout">Logout</button>
+    </li>
+  </ul>
+
+  <div id="div"></div>
+  <div id="div1">
+
+    <div class="form-group ">
+
+      <input type="text" class="form-control" placeholder="Username" id="usertxtinput" class="input-xlarge">
+      <input type="button" id="search" value="Confirm" onclick="search(); " />
+    </div>
+  </div>
+  <div id="div2">
+    <h1 id="p1">user name is: </h1>
+    <h1 id="p2"> attendance time is : </h1>
+    <input type="button" value="Close" onclick="closeindex();" />
+  </div>
+  </div>
+  <script src="js/JQuery-3.3.1.min.js"></script>
+  <script src="js/popper.js"></script>
+  <script src="js/bootstrap.js"></script>
+</body>
+
+</html>

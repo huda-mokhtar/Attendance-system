@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>emp</title>
+  <link href="css/bootstrap.css" rel="stylesheet" />
+  <link href="css/font-awesome.css" rel="stylesheet" />
+  <link href="emp.css" rel="stylesheet" />
+  <script src="jquery-3.5.1.js"></script>
+  <script>
+    let emp = [];
+    let _url = "emp.json";
+    $.ajax({
+      url: _url,
+      type: "get",
+      success: function (data) {
+        emp = data;
+      },
+      error: function err() {
+        console.log("Error Mesage!!");
+      }
+    });
+    owner = JSON.parse(localStorage.getItem('emplogin'));
+    //load 
+    $(function () {
+      const Find = emp.filter(el => el.username == owner[0].username);
+      const Attendtoday = Find.find(el => el.data == new Date().toLocaleDateString('en-US'));
+      $("div").hide();
+      $('#user').append("<span>" + owner[0].username + "</span>");
+      //daily report
+      $('#daily').on('click', function () {
+        let Late = 0;
+        let Atendd = 0;
+        $("p").remove();
+        if (Attendtoday) {
+          $("div").show();
+          if (Attendtoday.late) {
+            $("div").append("<p>YOU ATTAND AT" + Attendtoday.time + "</p>");
+            $("div").append("<p>YOU ARE LATE</p>");
+          } else {
+            $("div").append("<p>YOU ATTAND AT" + Attendtoday.time + "</p>");
+            $("div").append("<p>YOU ARENOT LATE</p>");
+          }
+        } else {
+          $("div").show();
+          $("div").append("<p>You not Attend Today</p>");
+        }
+      });
+      //month report
+      $('#month').on('click', function () {
+        let Late = 0;
+        let Atendd = 0;
+        $("p").remove();
+        console.log(Find, Find.length);
+        if (emp.find(el => el.username == owner[0].username)) {
+          for (i = 0; i < Find.length; i++) {
+            if (Find[i].late == true) {
+              Late++;
+              Atendd++;
+            } else {
+              Atendd++;
+            }
+          }
+          $("div").show();
+          $("div").append("<p>You Are Late  " + Late + " Days In Month</p>");
+          $("div").append("<p>You Are Attend" + Atendd + " In Month </p>");
+        } else {
+          $("div").show();
+          $("div").append("<p>YOI ARENOT ATTAND THIS MONTH</p>");
+        }
+
+
+      });
+      $("#logout").on('click', function () {
+        window.open("login.html", "_self");
+      });
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <ul class=" nav row col-12">
+    <li class="nav-item ">
+      <button class="nav-link text-nowrap  " id="user" disabled></button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link text-nowrap " id="daily">Daily</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link text-nowrap  " id="month">Monthly </button>
+    </li>
+    <li class="nav-item">
+    </li>
+    <li class="nav-item">
+      <button class="nav-link text-nowrap" id="logout">Logout</button>
+    </li>
+  </ul>
+  <div></div>
+
+  <script src="js/JQuery-3.3.1.min.js"></script>
+  <script src="js/popper.js"></script>
+  <script src="js/bootstrap.js"></script>
+</body>
+
+</html>
