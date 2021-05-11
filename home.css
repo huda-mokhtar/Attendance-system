@@ -1,7 +1,6 @@
 
 body {
-  /* background-image: url("signup-bg.jpg"); */
-  background-color:#040b14;
+  background-image: url("signup-bg.jpg"); 
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
