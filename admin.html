@@ -2,12 +2,28 @@
 <html lang="en">
 
 <head>
-  <title>admain</title>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>iPortfolio Bootstrap Template - Index</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/venobox/venobox.css" rel="stylesheet">
+  <link href="assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+
+ <!-- ======================================================== -->
   <link href="css/bootstrap.css" rel="stylesheet" />
   <link href="css/font-awesome.css" rel="stylesheet" />
-  <link href="emp.css" rel="stylesheet" />
   <script src="jquery-3.5.1.js"></script>
-
+  <!-- //script  -->
   <script>
     let arr = [];
     let emp = [];
@@ -36,14 +52,19 @@
         console.log("Error Mesage!!");
       }
     });
-
+    //owner username
+    owner = JSON.parse(localStorage.getItem('emplogin'));
+    // load
     $(function () {
+      $('#user').append("<span>" + owner[0].username + "</span>");
       txtobj = $("#newsTxt");
       btnobj = $("#btn");
       date = new Date().toLocaleDateString('en-US');
       employees = arr.filter(e => e.flag == true);
       $('#all').on("click", function () {
         $('tr').remove();
+        $('h2').remove();
+        $('#title').append("<h2 id='h2' >All Employee</h2>");
         $("#newsTbl").append("<tr><th scope='col'>username</th><th scope='col'>age</th><th scope='col'>address</th><th colspan='3' scope='col'>#</th></tr>");
         for (i = 0; i < arr.length; i++) {
           if (arr[i].flag == false) {
@@ -79,6 +100,8 @@
       });
       $("#full").on('click', function () {
         $('tr').remove();
+        $('h2').remove();
+        $('#title').append("<h2 id='h2' >Full Report</h2>");
         $("#newsTbl").append("<tr><th>User Name</th><th>Attand</th><th>Late</th><th>Abacen</th></tr>");
         for (i = 0; i < employees.length; i++) {
           let Late = 0;
@@ -102,6 +125,8 @@
       //
       $("#late").on('click', function () {
         $('tr').remove();
+        $('h2').remove();
+        $('#title').append("<h2 id='h2' >Late Report</h2>");
         $("#newsTbl").append("<tr><th>User Name</th><th colspan='5' >Late</th></tr>");
         for (i = 0; i < employees.length; i++) {
           Late = 0;
@@ -117,6 +142,8 @@
 
       $("#absence").on('click', function () {
         $('tr').remove();
+        $('h2').remove();
+        $('#title').append("<h2 id='h2' >Absence</h2>");
         $("#newsTbl").append("<tr><th>User Name</th><th colspan='5' >Absence</th></tr>");
         for (i = 0; i < employees.length; i++) {
           let Attandd = 0;
@@ -130,12 +157,8 @@
             "</td></tr>");
         }
       });
-      $("#logout").on('click', function () {
-        window.open("login.html", "_self");
-      });
-
-
     });
+    //Save Date
     function saveData(arr) {
       var NewData = new Blob([JSON.stringify(arr)], { type: "appliction/json" });
       var link = document.createElement("a");
@@ -144,40 +167,68 @@
       document.body.appendChild(link);
       link.click();
     }
-
-
-
-
-
-
   </script>
+  <!-- //end script -->
+
 </head>
-
 <body>
+  <!-- ======= Mobile nav toggle button ======= -->
+  <button type="button" class="mobile-nav-toggle d-xl-none"><i class="icofont-navigation-menu"></i></button>
+  <!-- ======= Header ======= -->
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile">
+        <img src="assets/img/profile-img.jpg" alt="" class="img-fluid rounded-circle">
+        <h1 class="text-light" id ="user"></h1>
+        <div class="social-links mt-3 text-center">
+          <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+          <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+          <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+          <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+          <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+        </div>
+      </div>
 
-  <ul class="nav row">
-    <li class="nav-item">
-      <button class="nav-link text-nowrap" id="all">All Employees</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link text-nowrap" id="full">Full Report</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link text-nowrap" id="late">Late Report</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link text-nowrap" id="absence">Absence Report</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link text-nowrap" id="logout">Logout</button>
-    </li>
-  </ul>
+      <nav class="nav-menu">
+        <ul>
+          <li><a  href="#all" id="all"><i class="bx bx-user"></i> <span>All Employees</span></a></li>
+          <li><a href="#all" id="full"><i class="bx bx-user"></i> <span>Full Report</span></a></li>
+          <li><a href="#all" id="late"><i class="bx bx-file-blank"></i> <span>Late Report</span></a></li>
+          <li><a href="#all" id="absence"><i class="bx bx-book-content"></i> Absence Report</a></li>
+          <li><a href="login.html" id="logout"><i class="bx bx-server"></i> Logout</a></li>
+        </ul>
+      </nav><!-- .nav-menu -->
+      <button type="button" class="mobile-nav-toggle d-xl-none"><i class="icofont-navigation-menu"></i></button>
+    </div>
+  </header><!-- End Header -->
+  
 
-  <table id="newsTbl" text-align="center" class="table table-striped">
+  <main id="main">
 
-  </table>
+    <!-- ======= All Employees Section ======= -->
+    <section id="all" class="about">
+      <div class="container">
+
+        <div class="section-title" id="title">
+          
+        </div>
+
+        <div class="row">
+         
+          <table id="newsTbl" text-align="center" class="table table-striped">
+
+          </table> 
+        </div>
+
+      </div>
+    </section><!-- End  Section -->
+    
+
+  </main><!-- End #main -->
+  
   <script src="js/popper.js"></script>
   <script src="js/bootstrap.js"></script>
+  <script src="assets/js/main.js"></script>
 </body>
 
 </html>

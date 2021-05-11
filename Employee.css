@@ -1,0 +1,9 @@
+#div{
+    border: 5px solid rgb(232, 238, 237);
+    text-align: center;
+    margin: 20px auto;
+    border-radius:3%;
+    width: 50%;
+    height: 70%;
+    padding: 10px;
+  }
