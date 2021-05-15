@@ -2,11 +2,28 @@
 <html lang="en">
 
 <head>
-  <title>supemp</title>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>iPortfolio Bootstrap Template - Index</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/icofont/icofont.min.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/venobox/venobox.css" rel="stylesheet">
+  <link href="assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+  <link href="Employee.css" rel="stylesheet" />
+  <!-- ======================================================== -->
   <link href="css/bootstrap.css" rel="stylesheet" />
   <link href="css/font-awesome.css" rel="stylesheet" />
-  <link href="emp.css" rel="stylesheet" />
   <script src="jquery-3.5.1.js"></script>
+  <!-- //script  -->
   <script>
     let arr = [];
     let emp = [];
@@ -45,6 +62,8 @@
       $('#div1').hide();
       $('#div2').hide();
       $('#confirme').on('click', function () {
+        $('h2').remove();
+      $('#title').append("<h2 id='h2' >Confirm</h2>");
         $("#div").hide();
         $('#div1').show();
 
@@ -68,6 +87,59 @@
         $('p').remove();
       });
 
+      //daily report
+      $('#daily').on('click', function () {
+      $('h2').remove();
+      $('#title').append("<h2 id='h2' >Daily</h2>");
+      $('#div1').hide();
+      $('#div2').hide();
+      var Late = 0;
+      var Atendd = 0;
+      const Find = emp.filter(el => el.username == arr[1].username);
+      const attendday = Find.find(el => el.data == new Date().toLocaleDateString('en-US'));
+      $("p").remove();
+      if (attendday) {
+        $("#div").show();
+        if (attendday.late) {
+          $("#div").append("<p>YOU aTTAND aT" + attendday.time + "</p>");
+          $("#div").append("<p>YOU aRE lATE</p>");
+        } else {
+          $("#div").append("<p>YOU aTTAND aT" + attendday.time + "</p>");
+          $("#div").append("<p>YOU aRENOT lATE</p>");
+        }
+      } else {
+        $("#div").show();
+        $("#div").append("<p>You not attend today</p>");
+      }
+    });
+      // month report
+    $('#month').on('click', function () {
+      $('h2').remove();
+      $('#title').append("<h2 id='h2' >Monthly</h2>");
+      $('#div1').hide();
+      $('#div2').hide();
+      let Late = 0;
+      let Atendd = 0;
+      const Find = emp.filter(el => el.username == arr[1].username);
+      $("p").remove();
+      if (emp.find(el => el.username == arr[1].username)) {
+        for (i = 0; i < Find.length; i++) {
+          if (Find[i].late == true) {
+            Late++;
+            Atendd++;
+          } else {
+            Atendd++;
+          }
+        }
+        $("#div").show();
+        $("#div").append("<p>You are late  " + Late + " days in month</p>");
+        $("#div").append("<p>You are attend " + Atendd + " in month </p>");
+      } else {
+        $("#div").show();
+        $("#div").append("<p>YOU ARENOT ATTAND THIS MONTH</p>");
+      }
+    });
+
       $("#logout").on('click', function () {
         window.open("login.html", "_self");
       });
@@ -82,7 +154,7 @@
         alert("Emp have entered before");
       } else {
         if (Find) {
-          if (time.split(':')[0] >= 8 && time.split(':')[0] <= 10 && time.split(':')[2].split(' ')[1] == "AM") {
+           if (time.split(':')[0] >= 8 && time.split(':')[0] <= 10 && time.split(':')[2].split(' ')[1] == "AM"){
             $('#div2').show();
             $("#p1").append("<p>" + Find.username + "</p>");
             // document.getElementById("search").disabled = true;
@@ -114,57 +186,6 @@
       // document.getElementById("search").disabled = false;
       $("p").remove();
     }
-    //fun dailay
-    function daily() {
-      $('#div1').hide();
-      $('#div2').hide();
-      var Late = 0;
-      var Atendd = 0;
-      const Find = emp.filter(el => el.username == arr[1].username);
-      const attendday = Find.find(el => el.data == new Date().toLocaleDateString('en-US'));
-      $("p").remove();
-      if (attendday) {
-        $("#div").show();
-        if (attendday.late) {
-          $("#div").append("<p>YOU ATTAND AT" + attendday.time + "</p>");
-          $("#div").append("<p>YOU ARE LATE</p>");
-        } else {
-          $("#div").append("<p>YOU ATTAND AT" + attendday.time + "</p>");
-          $("#div").append("<p>YOU ARENOT LATE</p>");
-        }
-      } else {
-        $("#div").show();
-        $("#div").append("<p>You not Attend Today</p>");
-      }
-    }
-    // month report
-    function month() {
-      $('#div1').hide();
-      $('#div2').hide();
-      let Late = 0;
-      let Atendd = 0;
-      const Find = emp.filter(el => el.username == arr[1].username);
-      $("p").remove();
-      if (emp.find(el => el.username == arr[1].username)) {
-        for (i = 0; i < Find.length; i++) {
-          if (Find[i].late == true) {
-            Late++;
-            Atendd++;
-          } else {
-            Atendd++;
-          }
-        }
-        $("#div").show();
-        $("#div").append("<p>You Are Late  " + Late + " Days In Month</p>");
-        $("#div").append("<p>You Are Attend" + Atendd + " In Month </p>");
-      } else {
-        $("#div").show();
-        $("#div").append("<p>YOI ARENOT ATTAND THIS MONTH</p>");
-      }
-    }
-
-
-
     //fun to save
     function saveData(arr) {
       var NewData = new Blob([JSON.stringify(arr)], { type: "appliction/json" });
@@ -175,50 +196,78 @@
       link.click();
     }
 
-
-
-
   </script>
+  <!-- //end script -->
+
 </head>
-
 <body>
+  <!-- ======= Mobile nav toggle button ======= -->
+  <button type="button" class="mobile-nav-toggle d-xl-none"><i class="icofont-navigation-menu"></i></button>
+  <!-- ======= Header ======= -->
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile">
+        <img src="assets/img/profile-img.jpg" alt="" class="img-fluid rounded-circle">
+        <h1 class="text-light" id ="user">Heba </h1>
+        <div class="social-links mt-3 text-center">
+          <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+          <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+          <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+          <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+          <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+        </div>
+      </div>
 
-  <ul class="nav row col-12">
-    <li class="nav-item">
-      <button class="nav-link text-nowrap" disabled>Heba </button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link text-nowrap" onclick="month();">Monthly Report</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link text-nowrap" onclick="daily();">Daily Report</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link text-nowrap" id="confirme">Confirme</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link text-nowrap col-12" id="logout">Logout</button>
-    </li>
-  </ul>
-
-  <div id="div"></div>
-  <div id="div1">
-
-    <div class="form-group ">
-
-      <input type="text" class="form-control" placeholder="Username" id="usertxtinput" class="input-xlarge">
-      <input type="button" id="search" value="Confirm" onclick="search(); " />
+      <nav class="nav-menu">
+        <ul>
+          <li><a href="#all" id="daily"><i class="bx bxs-file-blank"></i> <span>Daily</span></a></li>
+          <li><a href="#all" id="month"><i class="bx bx-file-blank"></i> <span>Monthly</span></a></li>
+          <li><a href="#all" id="confirme"><i class="bx bx-search"></i> <span>Confrim</span></a></li>
+          <li><a href="login.html" id="logout"><i class="bx bx-log-out"></i> Log Out</a></li>
+        </ul>
+      </nav><!-- .nav-menu -->
+      <button type="button" class="mobile-nav-toggle d-xl-none"><i class="icofont-navigation-menu"></i></button>
     </div>
-  </div>
-  <div id="div2">
-    <h1 id="p1">user name is: </h1>
-    <h1 id="p2"> attendance time is : </h1>
-    <input type="button" value="Close" onclick="closeindex();" />
-  </div>
-  </div>
-  <script src="js/JQuery-3.3.1.min.js"></script>
+  </header><!-- End Header -->
+  
+
+  <main id="main">
+
+    <!-- ======= All Employees Section ======= -->
+    <section id="all" class="about">
+      <div class="container">
+
+        <div class="section-title" id="title">
+          
+        </div>
+
+        <div class="row" style="display: block;">
+          <div id=div> </div>
+            <div id="div1">
+              <div class="form-group ">
+                <input type="text" class="form-control" placeholder="Username" id="usertxtinput" class="input-xlarge">
+                <input type="button" id="search" value="Confirm" onclick="search(); " />
+              </div>
+            </div>
+            <div id="div2">
+              <h1 id="p1"></h1>
+              <h1 id="p2"> </h1>
+              <input type="button" value="Close" onclick="closeindex();" />
+            </div>
+            </div>
+          </table> 
+        </div>
+
+      </div>
+    </section><!-- End  Section -->
+    
+
+  </main><!-- End #main -->
+  
   <script src="js/popper.js"></script>
   <script src="js/bootstrap.js"></script>
+  <script src="assets/js/main.js"></script>
+
 </body>
 
 </html>
